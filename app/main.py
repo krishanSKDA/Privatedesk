@@ -1,5 +1,7 @@
 import re
 import sys
+from decimal import Decimal, InvalidOperation
+from html import escape
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -10,7 +12,6 @@ import streamlit as st
 
 from app.accounting.mock_books import (
     MATCH,
-    MOCK_LABEL,
     AccountingAccessRevoked,
     AccountingConnection,
     MockQuickBooks,
@@ -19,54 +20,78 @@ from app.accounting.mock_books import (
 from app.approvals.gate import PENDING, SEND_EMAIL, ApprovalError, ApprovalGate, draft_follow_up
 from app.config import settings
 from app.extraction.extractor import ExtractionError, InvoiceExtractor, discover_invoices
-from app.extraction.schemas import FIELD_NAMES
 from app.generation.llm import LLMError, RateLimitExceeded
-from app.generation.rag_chain import MODEL_NOT_FOUND, NO_RELEVANT_PASSAGES, NO_VALID_CITATIONS, RagChain
+from app.generation.rag_chain import RagChain
 from app.ingestion.embedder import EmbeddingError
 from app.ingestion.loader import FileRejectedError
 from app.retrieval.retriever import RoleError
-from app.retrieval.vector_store import VectorStore, VectorStoreError
+from app.retrieval.vector_store import VectorStoreError
 from app.utils.logger import ActivityLog
 
-ROLE_LABELS = {"finance": "Finance", "hr": "HR"}
-FIELD_LABELS = {
-    "supplier": "Supplier",
-    "invoice_date": "Date",
-    "invoice_number": "Invoice no.",
-    "amount": "Amount",
-    "currency": "Currency",
+DEMO_USERS = {
+    "Daniel Reyes (Finance)": ("Daniel Reyes", "finance"),
+    "Priya Nair (HR)": ("Priya Nair", "hr"),
 }
-REFUSAL_REASONS = {
-    NO_RELEVANT_PASSAGES: "No passage you can access was relevant enough to answer from.",
-    MODEL_NOT_FOUND: "The passages you can access do not contain the answer.",
-    NO_VALID_CITATIONS: "The answer could not be tied to a source passage, so it was withheld.",
-}
-STATUS_LABELS = {
-    "match": "Matches the books",
-    "amount_mismatch": "Amount mismatch",
-    "currency_mismatch": "Currency mismatch",
-    "vendor_mismatch": "Vendor mismatch",
-    "missing_from_books": "Missing from the books",
-    "needs_review": "Needs review",
-}
-SAMPLE_QUESTIONS = {
+PAGES = {"finance": ["Ask", "Invoices", "Approvals"], "hr": ["Ask"]}
+SUGGESTIONS = {
     "finance": [
         "What are the payment terms in the Bluestone freight agreement?",
         "Who has to approve an expense claim of USD 1,800?",
-        "What was the revenue in Q3 2026?",
+        "When did we pay Coastal Office Supplies, and how much?",
     ],
     "hr": [
         "How many unused leave days can be carried over?",
         "When is a medical certificate needed for sick leave?",
-        "What is the liability cap in the Bluestone agreement?",
+        "When is the warehouse moving to Dubai Investments Park?",
     ],
+}
+NOT_FOUND_TEXT = "I couldn't find this in the documents you can access, so I won't guess."
+STATUS = {
+    "match": ("Matches the books", "ok"),
+    "amount_mismatch": ("Amount differs", "alert"),
+    "currency_mismatch": ("Currency differs", "alert"),
+    "vendor_mismatch": ("Supplier differs", "alert"),
+    "missing_from_books": ("Not in the books", "alert"),
+    "needs_review": ("Needs a person", "alert"),
 }
 UPLOAD_DIR = settings.processed_dir / "uploads"
 MARKDOWN_SPECIAL = re.compile(r"([\\`*_{}\[\]()#+\-.!|>~<$])")
 
+STYLE = """
+<style>
+[data-testid="stAppDeployButton"], [data-testid="stDecoration"], footer { display: none; }
+.block-container { max-width: 880px; padding-top: 2.2rem; }
+h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+.pd-brand { font-size: 1.3rem; font-weight: 700; color: #1F2A44; letter-spacing: -0.01em; }
+.pd-brand span { color: #2F5D8A; }
+.pd-lede { color: #4A5670; font-size: 0.98rem; max-width: 62ch; margin-bottom: 1.2rem; }
+.pd-stamp {
+    display: inline-block; padding: 0.1rem 0.55rem; border: 2px solid currentColor;
+    outline: 1px solid currentColor; outline-offset: 2px; border-radius: 3px;
+    font-weight: 700; font-size: 0.82rem; letter-spacing: 0.02em; transform: rotate(-2deg);
+}
+.pd-stamp.ok { color: #2E7D5B; }
+.pd-stamp.alert { color: #B23A3A; }
+.pd-stamp.neutral { color: #2F5D8A; }
+.pd-source { color: #4A5670; font-size: 0.85rem; }
+</style>
+"""
+
 
 def plain(text):
     return MARKDOWN_SPECIAL.sub(r"\\\1", text or "")
+
+
+def plain_lines(text):
+    return "  \n".join(plain(line) for line in (text or "").splitlines())
+
+
+def stamp(text, tone):
+    st.markdown(f'<span class="pd-stamp {tone}">{text}</span>', unsafe_allow_html=True)
+
+
+def lede(text):
+    st.markdown(f'<p class="pd-lede">{text}</p>', unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -84,11 +109,6 @@ def invoice_extractor():
     return InvoiceExtractor()
 
 
-@st.cache_resource
-def vector_store():
-    return VectorStore()
-
-
 def accounting_connection():
     return AccountingConnection()
 
@@ -102,8 +122,9 @@ def approval_gate():
 
 
 def init_state():
-    for key, default in (("history", []), ("extractions", {}), ("discrepancies", []), ("drafted", set()), ("flash", [])):
-        st.session_state.setdefault(key, default)
+    defaults = {"chats": {"finance": [], "hr": []}, "invoices": {}, "checks": [], "drafted": set(), "flash": []}
+    for key, value in defaults.items():
+        st.session_state.setdefault(key, value)
 
 
 def flash(kind, message):
@@ -117,101 +138,114 @@ def show_flash():
 
 
 def sidebar():
-    st.sidebar.title("PrivateDesk")
-    st.sidebar.caption("Document and invoice assistant. Prototype with synthetic demo data only.")
-    user = st.sidebar.text_input("Your name", value="Dana Lee").strip() or "anonymous"
-    role = st.sidebar.selectbox("Role", settings.roles, format_func=ROLE_LABELS.get)
-    st.sidebar.caption("Roles are picked here for the demo. A real deployment would take them from a login.")
-    accounting_panel(user, role)
-    index_panel()
-    data_flow_panel()
-    return user, role
-
-
-def accounting_panel(user, role):
-    st.sidebar.subheader("Accounting connection")
-    st.sidebar.caption(MOCK_LABEL)
-    connection = accounting_connection()
-    if connection.enabled:
-        st.sidebar.success("Connected (mock)")
-    else:
-        state = connection.state()
-        st.sidebar.error(f"Access revoked by {state['changed_by']} at {state['changed_at']}")
-    if role != "finance":
-        st.sidebar.caption("Only Finance can change this connection.")
-        return
-    if connection.enabled and st.sidebar.button("Revoke access", type="primary"):
-        connection.revoke(user)
-        activity_log().log_access_change(user, role, enabled=False)
-        st.rerun()
-    if not connection.enabled and st.sidebar.button("Restore access"):
-        connection.restore(user)
-        activity_log().log_access_change(user, role, enabled=True)
-        st.rerun()
-
-
-def index_panel():
-    st.sidebar.subheader("Document index")
-    try:
-        store = vector_store()
-        info = store.index_info()
-        st.sidebar.caption(
-            f"{store.count()} chunks | {info.get('embedding_provider')}/{info.get('embedding_model')} | built {info.get('built_at')}"
+    st.sidebar.markdown('<div class="pd-brand">Private<span>Desk</span></div>', unsafe_allow_html=True)
+    st.sidebar.caption("Answers from your company documents, kept private.")
+    account = st.sidebar.selectbox("Signed in as", list(DEMO_USERS), key="account")
+    user, role = DEMO_USERS[account]
+    pages = PAGES[role]
+    pending = len([action for action in approval_gate().pending() if action.role == role]) if "Approvals" in pages else 0
+    page = pages[0]
+    if len(pages) > 1:
+        page = st.sidebar.radio(
+            "Go to", pages, key=f"page-{role}", label_visibility="collapsed",
+            format_func=lambda name: f"{name} ({pending})" if name == "Approvals" and pending else name,
         )
-    except VectorStoreError as error:
-        st.sidebar.warning(str(error))
+    st.sidebar.divider()
+    admin_panel(user, role)
+    return user, role, page
 
 
-def data_flow_panel():
-    with st.sidebar.expander("What leaves this machine"):
+def admin_panel(user, role):
+    with st.sidebar.expander("Privacy and admin"):
         st.markdown(
-            f"**Sent to {settings.chat_provider.title()}:** questions, the retrieved passages used to answer them, "
-            "and invoice text or page images for extraction.\n\n"
-            "**Stays on this machine:** the vector index, role rules, activity log, approvals, "
-            "the outbox and the mock accounting data."
+            f"**Sent to {settings.chat_provider.title()}:** your question, the document passages used to answer it, "
+            "and invoices you check.\n\n**Kept on this computer:** the document index, access rules, approvals and the activity log."
         )
-
-
-def ask_tab(user, role):
-    st.subheader("Ask the documents")
-    st.caption(f"Answers use only documents the {ROLE_LABELS[role]} role may see, and show the passages they come from.")
-    columns = st.columns(len(SAMPLE_QUESTIONS[role]))
-    for column, sample in zip(columns, SAMPLE_QUESTIONS[role]):
-        if column.button(sample, key=f"sample-{role}-{sample}"):
-            st.session_state["question_input"] = sample
-    with st.form("ask-form"):
-        question = st.text_area("Question", key="question_input", height=80, max_chars=settings.max_question_chars)
-        submitted = st.form_submit_button("Ask", type="primary")
-    if submitted:
-        ask(question, user, role)
-    for asked_role, result in st.session_state.history:
-        if asked_role == role:
-            render_answer(result)
-
-
-def ask(question, user, role):
-    try:
-        with st.spinner("Searching the documents..."):
-            result = rag_chain().answer(question, role, user=user)
-        st.session_state.history.insert(0, (role, result))
-    except (RateLimitExceeded, ValueError) as error:
-        st.warning(str(error))
-    except (LLMError, EmbeddingError, VectorStoreError, RoleError) as error:
-        st.error(str(error))
-
-
-def render_answer(result):
-    with st.container(border=True):
-        st.markdown(f"**Question:** {plain(result.question)}")
-        if not result.found:
-            st.warning(result.answer)
-            st.caption(REFUSAL_REASONS.get(result.reason, result.reason))
+        if role != "finance":
             return
-        st.markdown(plain(result.answer))
-        st.caption("Sources")
-        for chunk in result.citations:
-            with st.expander(f"{chunk.citation} | relevance {chunk.score:.2f}"):
-                st.markdown(plain(chunk.text))
+        st.markdown("**Accounting connection** (demo data, not a real QuickBooks account)")
+        connection = accounting_connection()
+        if connection.enabled:
+            st.caption("Connected")
+            if st.button("Revoke access", key="revoke"):
+                connection.revoke(user)
+                activity_log().log_access_change(user, role, enabled=False)
+                st.rerun()
+        else:
+            st.caption(f"Access revoked by {connection.state()['changed_by']}")
+            if st.button("Restore access", key="restore"):
+                connection.restore(user)
+                activity_log().log_access_change(user, role, enabled=True)
+                st.rerun()
+        if st.checkbox("Show activity log", key="show-log"):
+            rows = [
+                {"When": row["created_at"], "Who": row["user"], "What": row["event"], "Documents": row["documents"], "Result": row["outcome"]}
+                for row in activity_log().recent(100)
+                if row["role"] == role
+            ]
+            st.dataframe(rows, hide_index=True, width="stretch")
+
+
+def ask_page(user, role):
+    st.title("Ask about company documents", anchor=False)
+    lede("Answers come only from documents your role can see, and each one shows where it came from.")
+    chat = st.session_state.chats[role]
+    question = st.chat_input("Ask a question")
+    if not chat and not question:
+        st.caption("Try one of these:")
+        for suggestion in SUGGESTIONS[role]:
+            if st.button(suggestion, key=f"suggest-{role}-{suggestion}"):
+                chat.append(answer_message(suggestion, user, role))
+                st.rerun()
+    if question:
+        chat.append(answer_message(question, user, role))
+    for exchange in chat:
+        render_exchange(exchange)
+    if chat and st.button("Clear conversation", key=f"clear-{role}"):
+        chat.clear()
+        st.rerun()
+
+
+def answer_message(question, user, role):
+    exchange = {"question": question, "answer": None, "sources": [], "notice": None}
+    try:
+        with st.spinner("Searching your documents..."):
+            result = rag_chain().answer(question, role, user=user)
+    except RateLimitExceeded as error:
+        exchange["notice"] = str(error)
+        return exchange
+    except ValueError as error:
+        exchange["notice"] = str(error)
+        return exchange
+    except VectorStoreError:
+        exchange["notice"] = "The documents have not been prepared yet. Run python run_ingestion.py, then ask again."
+        return exchange
+    except (LLMError, EmbeddingError, RoleError):
+        exchange["notice"] = "The assistant could not reach the AI service. Check the connection and ask again in a minute."
+        return exchange
+    if result.found:
+        exchange["answer"] = result.answer
+        exchange["sources"] = [(chunk.title, chunk.page, chunk.text) for chunk in result.citations]
+    else:
+        exchange["answer"] = NOT_FOUND_TEXT
+    return exchange
+
+
+def render_exchange(exchange):
+    with st.chat_message("user", avatar=":material/person:"):
+        st.markdown(plain(exchange["question"]))
+    with st.chat_message("assistant", avatar=":material/description:"):
+        if exchange["notice"]:
+            st.warning(exchange["notice"])
+            return
+        st.markdown(plain(exchange["answer"]))
+        if not exchange["sources"]:
+            return
+        with st.expander(f"Sources ({len(exchange['sources'])})"):
+            for title, page, text in exchange["sources"]:
+                location = f", page {page}" if page else ""
+                st.markdown(f'<p class="pd-source"><b>{escape(title)}</b>{location}</p>', unsafe_allow_html=True)
+                st.markdown(plain_lines(text))
 
 
 def safe_upload_name(name):
@@ -229,96 +263,105 @@ def save_uploads(files):
     return paths
 
 
-def invoices_tab(user, role):
-    st.subheader("Invoices")
-    if role != "finance":
-        st.info("Invoices are only available to the Finance role.")
-        return
-    st.caption(
-        f"Invoice text or page images are sent to {settings.chat_provider.title()} for extraction. "
-        "Missing or uncertain fields are left empty and marked for review, never guessed."
+def invoices_page(user, role):
+    st.title("Check invoices", anchor=False)
+    lede(
+        "Reads each invoice, compares it with the accounting records and flags anything a person should look at. "
+        "Unclear details are left blank, never guessed."
     )
-    include_holdout = st.checkbox("Include held-out invoices (final evaluation only)")
-    uploads = st.file_uploader("Add invoices (PDF, PNG or JPG)", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
+    with st.expander("Add invoices"):
+        uploads = st.file_uploader("PDF, PNG or JPG", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
+        include_holdout = st.checkbox("Include the unseen test invoices", key="include-holdout")
     paths = discover_invoices(include_holdout) + save_uploads(uploads)
-    selected = st.multiselect("Invoices to extract", paths, default=paths, format_func=lambda path: path.name)
-    if st.button("Extract fields", type="primary", disabled=not selected):
-        extract(selected, user, role)
-    results = list(st.session_state.extractions.values())
-    if not results:
-        return
-    render_extractions(results)
-    comparison_section(results, user, role)
+    st.caption(f"{len(paths)} invoices ready to check.")
+    if st.button("Check invoices", type="primary", disabled=not paths):
+        check_invoices(paths, user, role)
+    results = list(st.session_state.invoices.values())
+    if results:
+        render_invoice_table(results)
+        render_issues(user, role)
 
 
-def extract(paths, user, role):
-    progress = st.progress(0.0, text="Extracting...")
+def check_invoices(paths, user, role):
+    progress = st.progress(0.0, text="Reading invoices...")
     for position, path in enumerate(paths, start=1):
         try:
             result = invoice_extractor().extract(path)
-            st.session_state.extractions[path.name] = result
+            st.session_state.invoices[path.name] = result
             activity_log().log_extraction(user, role, result)
-        except (FileRejectedError, ExtractionError, LLMError, EmbeddingError) as error:
-            st.error(str(error))
+        except FileRejectedError as error:
+            flash("error", str(error))
+        except (ExtractionError, LLMError, EmbeddingError):
+            flash("error", f"{path.name} could not be read. Try checking it again.")
             activity_log().record(user, role, "invoice_extraction", documents=(path.name,), outcome="error")
-        progress.progress(position / len(paths), text=f"Extracted {position} of {len(paths)}")
-    st.session_state.discrepancies = []
+        progress.progress(position / len(paths), text=f"Read {position} of {len(paths)} invoices")
+    progress.empty()
+    try:
+        checks = compare_invoices(list(st.session_state.invoices.values()), books())
+        activity_log().log_comparison(user, role, checks)
+    except AccountingAccessRevoked:
+        checks = []
+        flash("warning", "The accounting connection is off, so invoices were read but not compared with the books.")
+    st.session_state.checks = checks
+    st.session_state.drafted = set()
+    st.rerun()
 
 
-def render_extractions(results):
-    rows = [
-        {
-            "File": result.file,
-            **{FIELD_LABELS[name]: result.value(name) or "needs review" for name in FIELD_NAMES},
-            "Status": "Needs review" if result.needs_review else "OK",
-        }
-        for result in results
-    ]
-    st.dataframe(rows, hide_index=True, width="stretch")
+def amount_text(result):
+    amount, currency = result.value("amount"), result.value("currency")
+    if amount is None:
+        return "Check needed"
+    try:
+        figure = f"{Decimal(amount):,.2f}"
+    except InvalidOperation:
+        figure = amount
+    return f"{currency} {figure}" if currency else f"{figure} (currency unclear)"
+
+
+def render_invoice_table(results):
+    checks = {item.file: item for item in st.session_state.checks}
+    rows = []
     for result in results:
-        if not result.needs_review:
-            continue
-        with st.expander(f"Why {result.file} needs review"):
-            for name in result.review_fields:
-                field = result.fields[name]
-                st.markdown(f"**{FIELD_LABELS[name]}**: {plain('; '.join(field.reasons))}")
-                if field.candidate:
-                    st.caption(f"Suggested value for the reviewer: {plain(field.candidate)} | read from: {plain(field.evidence) or '-'}")
+        check = checks.get(result.file)
+        rows.append(
+            {
+                "Supplier": result.value("supplier") or "Check needed",
+                "Invoice no.": result.value("invoice_number") or "Check needed",
+                "Date": result.value("invoice_date") or "Check needed",
+                "Amount": amount_text(result),
+                "Result": STATUS[check.status][0] if check else "Not compared",
+                "File": result.file,
+            }
+        )
+    st.dataframe(rows, hide_index=True, width="stretch")
 
 
-def comparison_section(results, user, role):
-    st.subheader("Compare with the books")
-    st.caption(MOCK_LABEL)
-    if st.button("Compare with mock QuickBooks"):
-        try:
-            discrepancies = compare_invoices(results, books())
-            st.session_state.discrepancies = discrepancies
-            activity_log().log_comparison(user, role, discrepancies)
-        except AccountingAccessRevoked as error:
-            st.error(str(error))
-    for item in st.session_state.discrepancies:
-        render_discrepancy(item, user, role)
+def render_issues(user, role):
+    issues = [item for item in st.session_state.checks if item.status != MATCH]
+    if not issues:
+        return
+    st.subheader(f"Needs attention ({len(issues)})", anchor=False)
+    for item in issues:
+        with st.container(border=True):
+            label, tone = STATUS[item.status]
+            stamp(label, tone)
+            st.markdown(f"**{plain(item.vendor or item.file)}**")
+            st.markdown(plain(item.message))
+            result = st.session_state.invoices.get(item.file)
+            if result and result.needs_review:
+                with st.expander("What needs checking"):
+                    for name in result.review_fields:
+                        field = result.fields[name]
+                        suggestion = f" Suggested: {field.candidate}." if field.candidate else ""
+                        st.markdown(plain(f"{name.replace('_', ' ').capitalize()}: {'; '.join(field.reasons)}.{suggestion}"))
+            if item.file in st.session_state.drafted:
+                st.caption("Follow-up prepared. It is waiting in Approvals.")
+            elif st.button("Prepare follow-up", key=f"draft-{item.file}"):
+                prepare_follow_up(item, user, role)
+                st.rerun()
 
 
-def render_discrepancy(item, user, role):
-    with st.container(border=True):
-        label = STATUS_LABELS.get(item.status, item.status)
-        if item.status == MATCH:
-            st.success(f"{item.file}: {label}")
-        else:
-            st.warning(f"{item.file}: {label}")
-        st.markdown(plain(item.message))
-        if item.status == MATCH:
-            return
-        if item.file in st.session_state.drafted:
-            st.caption("A follow-up has been drafted and is waiting in the Review tab.")
-            return
-        if st.button("Draft follow-up", key=f"draft-{item.file}"):
-            draft(item, user, role)
-            st.rerun()
-
-
-def draft(item, user, role):
+def prepare_follow_up(item, user, role):
     try:
         vendor_email = books().vendor_email(item.vendor) if item.vendor else None
         action = draft_follow_up(approval_gate(), item, vendor_email, user, role)
@@ -326,76 +369,66 @@ def draft(item, user, role):
         flash("error", str(error))
         return
     if action is None:
-        flash("info", f"There is no follow-up template for {item.file}.")
+        flash("info", "There is no follow-up for this case yet.")
         return
     st.session_state.drafted.add(item.file)
-    flash("success", f"Drafted: {action.title}. It is waiting for approval in the Review tab.")
+    flash("success", "Follow-up prepared. Review it in Approvals.")
 
 
-def review_tab(user, role):
+def approvals_page(user, role):
     gate = approval_gate()
+    st.title("Approvals", anchor=False)
+    lede("Nothing is sent or changed until you approve it. In this demo, approved actions are recorded on this computer instead of being sent.")
     pending = [action for action in gate.pending() if action.role == role]
-    st.subheader(f"Waiting for approval ({len(pending)})")
-    st.caption(
-        "Nothing is sent or changed until a named person approves it. Approved actions are simulated: "
-        "they are written to a local outbox file and never leave this machine."
-    )
     if not pending:
-        st.info("No drafted actions are waiting.")
+        st.info("Nothing is waiting for approval. Prepare follow-ups from Check invoices.")
     for action in pending:
-        render_action(gate, action, user, role)
+        render_pending(gate, action, user, role)
     decided = [action for action in gate.list() if action.status != PENDING and action.role == role][:20]
-    with st.expander(f"Decided actions ({len(decided)})"):
-        st.dataframe(
-            [{"Action": a.title, "Status": a.status, "By": a.decided_by, "At": a.decided_at, "Note": a.decision_note} for a in decided],
-            hide_index=True, width="stretch",
-        )
-    with st.expander("Activity log"):
-        st.caption("Logs record who asked what, the document names used and each decision. They never store document text.")
-        rows = [row for row in activity_log().recent(200) if row["role"] == role]
-        st.dataframe(rows, hide_index=True, width="stretch")
+    if decided:
+        with st.expander(f"History ({len(decided)})"):
+            for action in decided:
+                stamp("Approved" if action.status == "executed" else "Rejected", "ok" if action.status == "executed" else "alert")
+                st.caption(f"{plain(action.title)}. {action.decided_by}, {action.decided_at}")
 
 
-def render_action(gate, action, user, role):
+def render_pending(gate, action, user, role):
     with st.container(border=True):
+        stamp("Waiting for approval", "neutral")
         st.markdown(f"**{plain(action.title)}**")
-        st.caption(f"Requested by {action.created_by} | {action.created_at} | source: {action.source or '-'}")
         for warning in action.warnings:
             st.warning(warning)
         if action.kind == SEND_EMAIL:
             st.text(f"To: {action.payload['to']}\nSubject: {action.payload['subject']}\n\n{action.payload['body']}")
         else:
-            st.json(action.payload)
-        note = st.text_input("Note (optional)", key=f"note-{action.id}")
-        approve_column, reject_column = st.columns(2)
-        if approve_column.button("Approve", key=f"approve-{action.id}", type="primary"):
-            decide(gate.approve, action, user, role, note, "Approved. The action was simulated and written to the local outbox.")
-        if reject_column.button("Reject", key=f"reject-{action.id}"):
-            decide(gate.reject, action, user, role, note, "Rejected. Nothing was sent.")
+            details = {key: value for key, value in action.payload.items() if value}
+            st.markdown("\n".join(f"- {plain(key.replace('_', ' ').capitalize())}: {plain(str(value))}" for key, value in details.items()))
+        approve, reject = st.columns(2)
+        if approve.button("Approve", key=f"approve-{action.id}", type="primary", width="stretch"):
+            decide(gate.approve, action, user, role, "Approved. Recorded on this computer; nothing was sent.")
+        if reject.button("Reject", key=f"reject-{action.id}", width="stretch"):
+            decide(gate.reject, action, user, role, "Rejected. Nothing was sent.")
 
 
-def decide(decision, action, user, role, note, message):
+def decide(decision, action, user, role, message):
     try:
-        decision(action.id, user, role, note or None)
+        decision(action.id, user, role)
         flash("success", message)
     except ApprovalError as error:
         flash("error", str(error))
     st.rerun()
 
 
+PAGE_VIEWS = {"Ask": ask_page, "Invoices": invoices_page, "Approvals": approvals_page}
+
+
 def main():
-    st.set_page_config(page_title="PrivateDesk", layout="wide")
+    st.set_page_config(page_title="PrivateDesk", layout="centered")
+    st.markdown(STYLE, unsafe_allow_html=True)
     init_state()
-    user, role = sidebar()
-    st.title("PrivateDesk")
+    user, role, page = sidebar()
     show_flash()
-    ask_panel, invoices_panel, review_panel = st.tabs(["Ask", "Invoices", "Review"])
-    with ask_panel:
-        ask_tab(user, role)
-    with invoices_panel:
-        invoices_tab(user, role)
-    with review_panel:
-        review_tab(user, role)
+    PAGE_VIEWS[page](user, role)
 
 
 if __name__ == "__main__":
