@@ -1,0 +1,40 @@
+{
+  "discrepancies": [
+    {
+      "file": "halcyon_invoice_sep2026.pdf",
+      "invoice_number": "HP-55102",
+      "status": "amount_mismatch",
+      "invoice_amount": "12430.50",
+      "books_amount": "12340.50",
+      "difference": "90.00",
+      "currency": "EUR"
+    },
+    {
+      "file": "coastal_office_invoice.pdf",
+      "invoice_number": "COS-88217",
+      "status": "missing_from_books",
+      "note": "Paid on 2026-09-25 per the bank statement, but no bill exists in the books."
+    },
+    {
+      "file": "scan_20260923_cedar.pdf",
+      "invoice_number": "CPL-3391",
+      "status": "match"
+    },
+    {
+      "file": "apex_invoice.pdf",
+      "invoice_number": null,
+      "status": "needs_review",
+      "note": "No invoice number on the document. Candidate bill APX-2026-091 matches on vendor and amount only."
+    },
+    {
+      "file": "bluestone_invoice_sep2026.pdf",
+      "invoice_number": "BFS-2026-0418",
+      "status": "match"
+    },
+    {
+      "file": "greenline_invoice_oct2026.pdf",
+      "invoice_number": "GFM/10/2026/077",
+      "status": "match"
+    }
+  ]
+}

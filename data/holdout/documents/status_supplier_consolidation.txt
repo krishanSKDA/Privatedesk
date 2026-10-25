@@ -1,0 +1,26 @@
+MERIDIAN TRADING LLC - PROJECT STATUS NOTE
+
+Project: Packaging supplier consolidation
+Report date: 2026-10-02
+Project owner: Aisha Rahman, Procurement Officer
+Overall status: AMBER
+
+Summary
+The goal is to reduce packaging and warehouse consumables suppliers from five to two by 2027-03-31. The savings target is 8% of annual packaging spend of USD 610,000, which is about USD 48,800 per year. Halcyon Packaging GmbH is the preferred supplier for boxes, stretch film and bubble wrap. Cedar Print & Label Co. remains under review for printed labels.
+
+Supplier status
+- Halcyon Packaging GmbH: preferred, H2 2026 price list accepted
+- Cedar Print & Label Co.: under review after a six-day late delivery on PO-2026-0871 in September
+- Rapidpak Trading: to be phased out by 2026-12-31
+- Gulf Wrap Supplies: to be phased out by 2026-12-31
+- Coastal Office Supplies LLC: out of scope (office supplies, not packaging)
+
+Risks and issues
+1. Moving all box volume to Halcyon increases lead times to 21 days for medium and large boxes, so safety stock must rise by about two weeks.
+2. A fraudulent request to change Cedar's bank details was received on 2026-09-24 and rejected. Supplier bank detail changes now need phone confirmation from Finance.
+3. The decision on Cedar is due by 2026-11-15. If Cedar is dropped, an alternative label printer must be qualified.
+
+Next steps
+- Request a 2027 price proposal from Halcyon (Aisha Rahman, 2026-10-20)
+- Send phase-out notices to Rapidpak Trading and Gulf Wrap Supplies (Aisha Rahman, 2026-10-31)
+- Recommend whether to keep or drop Cedar (Aisha Rahman, 2026-11-15)

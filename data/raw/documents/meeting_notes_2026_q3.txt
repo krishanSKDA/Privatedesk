@@ -1,0 +1,69 @@
+MERIDIAN TRADING LLC
+LEADERSHIP MEETING NOTES - Q3 2026
+Distribution: all staff (internal)
+
+==================================================
+Meeting: 14 July 2026
+Attendees: Sarah Okafor (Managing Director, chair), Daniel Reyes (Finance Manager), Priya Nair (HR Manager), Tomas Lindqvist (Operations Lead), Aisha Rahman (Procurement Officer)
+
+1. Q2 results
+Daniel reported Q2 2026 revenue of USD 1.92 million, 6% above plan. Gross margin was 31.5%.
+
+2. Warehouse relocation
+The leadership team approved a budget of USD 145,000 for moving the warehouse from Al Quoz to Dubai Investments Park (Unit 14). Tomas will lead the project.
+
+3. Packaging suppliers
+The company buys packaging and consumables from five suppliers. Aisha will start a supplier consolidation project and report back in October.
+
+Action items
+- Tomas Lindqvist: sign the lease for DIP Unit 14 by 31 July 2026.
+- Aisha Rahman: send a request for quotation to the current packaging suppliers by 1 August 2026.
+
+==================================================
+Meeting: 11 August 2026
+Attendees: Sarah Okafor, Daniel Reyes, Priya Nair, Tomas Lindqvist, Ken Watanabe (IT and ERP Lead)
+
+1. Freight performance
+Bluestone Freight Services delivered 96.4% of containers on time in July. This is below the 98% contract target but above the 95% service-credit threshold. Tomas will raise it at the monthly supplier review.
+
+2. Hiring
+Hiring for non-critical roles is frozen until 31 December 2026. The open warehouse supervisor role is treated as critical and will continue.
+
+3. Halcyon price list
+The Halcyon Packaging price list for July to December 2026 was accepted. Orders should be combined where possible to reach the 5% volume discount on orders above EUR 10,000.
+
+Action items
+- Priya Nair: tell hiring managers about the hiring freeze by 15 August 2026.
+- Aisha Rahman: combine the September packaging orders into one Halcyon order.
+
+==================================================
+Meeting: 8 September 2026
+Attendees: Sarah Okafor, Daniel Reyes, Priya Nair, Tomas Lindqvist, Ken Watanabe
+
+1. Warehouse move date
+The move to DIP Unit 14 is confirmed for 14-15 November 2026 (a weekend). Customer deliveries will pause from 13 to 16 November.
+
+2. ERP rollout
+Ken reported that the inventory valuation report failed user acceptance testing. A decision on the go-live date will be made at the meeting on 29 September 2026.
+
+3. Laptop refresh
+The purchase of 8 replacement laptops for a total of USD 11,200 was approved.
+
+Action items
+- Tomas Lindqvist: notify customers about the delivery pause by 15 October 2026.
+- Ken Watanabe: prepare a revised ERP plan for 29 September.
+
+==================================================
+Meeting: 29 September 2026
+Attendees: Sarah Okafor, Daniel Reyes, Tomas Lindqvist, Ken Watanabe, Aisha Rahman
+
+1. ERP go-live
+The go-live date for the ERP rollout moves from 5 October 2026 to 2 November 2026. Daniel will present a change request for the expected USD 4,500 budget overrun on 13 October 2026.
+
+2. Cedar Print & Label
+Cedar delivered order PO-2026-0871 six days late. Aisha will include delivery performance in the supplier consolidation review.
+
+3. Payment security
+Finance received an email asking to change Cedar's bank details. Daniel confirmed by phone that Cedar did not send it. Bank detail changes are never accepted by email alone; they must be confirmed by phone using the number in the vendor file.
+
+Next meeting: 13 October 2026.

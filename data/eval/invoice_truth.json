@@ -1,0 +1,97 @@
+{
+  "invoices": [
+    {
+      "file": "halcyon_invoice_sep2026.pdf",
+      "split": "build",
+      "scanned": false,
+      "layout": "european",
+      "expected": {
+        "supplier": "Halcyon Packaging GmbH",
+        "invoice_date": "2026-09-12",
+        "invoice_number": "HP-55102",
+        "amount": "12430.50",
+        "currency": "EUR"
+      },
+      "expected_review": []
+    },
+    {
+      "file": "coastal_office_invoice.pdf",
+      "split": "build",
+      "scanned": false,
+      "layout": "classic",
+      "expected": {
+        "supplier": "Coastal Office Supplies LLC",
+        "invoice_date": "2026-09-18",
+        "invoice_number": "COS-88217",
+        "amount": "659.40",
+        "currency": "USD"
+      },
+      "expected_review": []
+    },
+    {
+      "file": "scan_20260923_cedar.pdf",
+      "split": "build",
+      "scanned": true,
+      "layout": "classic",
+      "expected": {
+        "supplier": "Cedar Print & Label Co.",
+        "invoice_date": "2026-09-22",
+        "invoice_number": "CPL-3391",
+        "amount": "2430.75",
+        "currency": "USD"
+      },
+      "expected_review": []
+    },
+    {
+      "file": "apex_invoice.pdf",
+      "split": "build",
+      "scanned": false,
+      "layout": "messy",
+      "expected": {
+        "supplier": "Apex IT Solutions Pte Ltd",
+        "invoice_date": null,
+        "invoice_number": null,
+        "amount": "11968.20",
+        "currency": null
+      },
+      "expected_review": [
+        "invoice_number",
+        "invoice_date",
+        "currency"
+      ],
+      "reference_values_from_books": {
+        "invoice_date": "2026-10-04",
+        "currency": "SGD",
+        "trap": "The page mentions previous invoice APX-2026-074; it is not this invoice's number."
+      }
+    },
+    {
+      "file": "bluestone_invoice_sep2026.pdf",
+      "split": "holdout",
+      "scanned": false,
+      "layout": "classic",
+      "expected": {
+        "supplier": "Bluestone Freight Services Ltd",
+        "invoice_date": "2026-09-05",
+        "invoice_number": "BFS-2026-0418",
+        "amount": "8242.50",
+        "currency": "USD"
+      },
+      "expected_review": []
+    },
+    {
+      "file": "greenline_invoice_oct2026.pdf",
+      "split": "holdout",
+      "scanned": false,
+      "layout": "tax_invoice",
+      "expected": {
+        "supplier": "Greenline Facilities Management LLC",
+        "invoice_date": "2026-10-01",
+        "invoice_number": "GFM/10/2026/077",
+        "amount": "4410.00",
+        "currency": "USD"
+      },
+      "expected_review": []
+    }
+  ]
+}

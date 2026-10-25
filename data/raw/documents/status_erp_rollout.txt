@@ -1,0 +1,31 @@
+MERIDIAN TRADING LLC - PROJECT STATUS NOTE
+
+Project: ERP rollout (finance and inventory modules)
+Report date: 2026-09-30
+Project owner: Ken Watanabe, IT and ERP Lead
+Executive sponsor: Daniel Reyes, Finance Manager
+Implementation partner: Apex IT Solutions Pte Ltd
+Overall status: AMBER
+
+Summary
+The data migration of vendor and item master records finished on 2026-09-19. User acceptance testing (UAT) of the finance module started on 2026-09-22 and 41 of 58 test scripts have passed. The go-live date has moved from 2026-10-05 to 2026-11-02 because the inventory valuation report failed UAT twice.
+
+Milestones
+- M1 Design sign-off: complete (2026-07-10)
+- M2 Data migration: complete (2026-09-19)
+- M3 UAT finance module: in progress, target 2026-10-16
+- M4 UAT inventory module: not started, target 2026-10-23
+- M5 Go-live: 2026-11-02 (was 2026-10-05)
+
+Budget
+Approved budget: USD 68,000. Spent to date: USD 41,350. Forecast at completion: USD 72,500, which is USD 4,500 over budget because of the extra UAT cycle. A change request for the overrun goes to the leadership meeting on 2026-10-13.
+
+Risks and issues
+1. The inventory valuation report gives different totals from the legacy system for items bought in more than one currency. Owner: Apex IT Solutions. Fix due 2026-10-09.
+2. Only two staff are trained as super-users. Training for four more finance staff is booked for 2026-10-20 and 2026-10-21.
+3. The legacy system licence expires on 2026-12-31. A further delay past December would need a licence extension costing about USD 3,000.
+
+Next steps
+- Retest the inventory valuation report after the fix (Ken Watanabe, 2026-10-12)
+- Present the change request for the budget overrun (Daniel Reyes, 2026-10-13)
+- Freeze new entries in the legacy system from 2026-10-30 (Finance team)

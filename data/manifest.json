@@ -1,0 +1,264 @@
+{
+  "company": "Meridian Trading LLC",
+  "synthetic": true,
+  "roles": [
+    "finance",
+    "hr"
+  ],
+  "mock_accounting": "data/accounting/quickbooks_mock.json",
+  "documents": [
+    {
+      "document": "contract_bluestone_freight.pdf",
+      "path": "data/raw/documents/contract_bluestone_freight.pdf",
+      "title": "Logistics Services Agreement - Bluestone Freight Services",
+      "doc_type": "contract",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 3,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "contract_greenline_facilities.pdf",
+      "path": "data/holdout/documents/contract_greenline_facilities.pdf",
+      "title": "Facilities Maintenance Agreement - Greenline Facilities Management",
+      "doc_type": "contract",
+      "roles": [
+        "finance"
+      ],
+      "split": "holdout",
+      "format": "pdf",
+      "pages": 2,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "status_erp_rollout.txt",
+      "path": "data/raw/documents/status_erp_rollout.txt",
+      "title": "Project Status Note - ERP Rollout",
+      "doc_type": "status_note",
+      "roles": [
+        "finance",
+        "hr"
+      ],
+      "split": "build",
+      "format": "txt",
+      "pages": null,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "status_warehouse_relocation.txt",
+      "path": "data/raw/documents/status_warehouse_relocation.txt",
+      "title": "Project Status Note - Warehouse Relocation",
+      "doc_type": "status_note",
+      "roles": [
+        "finance",
+        "hr"
+      ],
+      "split": "build",
+      "format": "txt",
+      "pages": null,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "status_supplier_consolidation.txt",
+      "path": "data/holdout/documents/status_supplier_consolidation.txt",
+      "title": "Project Status Note - Packaging Supplier Consolidation",
+      "doc_type": "status_note",
+      "roles": [
+        "finance",
+        "hr"
+      ],
+      "split": "holdout",
+      "format": "txt",
+      "pages": null,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "supplier_price_list_halcyon.pdf",
+      "path": "data/raw/documents/supplier_price_list_halcyon.pdf",
+      "title": "Halcyon Packaging Price List 2026 H2",
+      "doc_type": "price_list",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 1,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "hr_leave_policy.pdf",
+      "path": "data/raw/documents/hr_leave_policy.pdf",
+      "title": "Leave Policy HR-04",
+      "doc_type": "policy",
+      "roles": [
+        "hr"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 2,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "expense_policy.pdf",
+      "path": "data/raw/documents/expense_policy.pdf",
+      "title": "Expense Policy FIN-02",
+      "doc_type": "policy",
+      "roles": [
+        "finance",
+        "hr"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 2,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "hr_remote_work_policy.pdf",
+      "path": "data/holdout/documents/hr_remote_work_policy.pdf",
+      "title": "Remote Work Policy HR-07",
+      "doc_type": "policy",
+      "roles": [
+        "hr"
+      ],
+      "split": "holdout",
+      "format": "pdf",
+      "pages": 1,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "meeting_notes_2026_q3.txt",
+      "path": "data/raw/documents/meeting_notes_2026_q3.txt",
+      "title": "Leadership Meeting Notes Q3 2026",
+      "doc_type": "meeting_notes",
+      "roles": [
+        "finance",
+        "hr"
+      ],
+      "split": "build",
+      "format": "txt",
+      "pages": null,
+      "contains_prompt_injection": false
+    },
+    {
+      "document": "supplier_correspondence_cedar.txt",
+      "path": "data/raw/documents/supplier_correspondence_cedar.txt",
+      "title": "Supplier Correspondence - Cedar Print & Label",
+      "doc_type": "correspondence",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "txt",
+      "pages": null,
+      "contains_prompt_injection": true
+    },
+    {
+      "document": "halcyon_invoice_sep2026.pdf",
+      "path": "data/raw/invoices/halcyon_invoice_sep2026.pdf",
+      "title": "Invoice from Halcyon Packaging GmbH",
+      "doc_type": "invoice",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 1,
+      "scanned": false,
+      "layout": "european"
+    },
+    {
+      "document": "coastal_office_invoice.pdf",
+      "path": "data/raw/invoices/coastal_office_invoice.pdf",
+      "title": "Invoice from Coastal Office Supplies LLC",
+      "doc_type": "invoice",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 1,
+      "scanned": false,
+      "layout": "classic"
+    },
+    {
+      "document": "scan_20260923_cedar.pdf",
+      "path": "data/raw/invoices/scan_20260923_cedar.pdf",
+      "title": "Invoice from Cedar Print & Label Co.",
+      "doc_type": "invoice",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 1,
+      "scanned": true,
+      "layout": "classic"
+    },
+    {
+      "document": "apex_invoice.pdf",
+      "path": "data/raw/invoices/apex_invoice.pdf",
+      "title": "Invoice from Apex IT Solutions Pte Ltd",
+      "doc_type": "invoice",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "pdf",
+      "pages": 1,
+      "scanned": false,
+      "layout": "messy"
+    },
+    {
+      "document": "bluestone_invoice_sep2026.pdf",
+      "path": "data/holdout/invoices/bluestone_invoice_sep2026.pdf",
+      "title": "Invoice from Bluestone Freight Services Ltd",
+      "doc_type": "invoice",
+      "roles": [
+        "finance"
+      ],
+      "split": "holdout",
+      "format": "pdf",
+      "pages": 1,
+      "scanned": false,
+      "layout": "classic"
+    },
+    {
+      "document": "greenline_invoice_oct2026.pdf",
+      "path": "data/holdout/invoices/greenline_invoice_oct2026.pdf",
+      "title": "Invoice from Greenline Facilities Management LLC",
+      "doc_type": "invoice",
+      "roles": [
+        "finance"
+      ],
+      "split": "holdout",
+      "format": "pdf",
+      "pages": 1,
+      "scanned": false,
+      "layout": "tax_invoice"
+    },
+    {
+      "document": "bank_statement_2026-09.csv",
+      "path": "data/raw/statements/bank_statement_2026-09.csv",
+      "title": "Bank statement, operating account, 1 Sep to 15 Oct 2026",
+      "doc_type": "bank_statement",
+      "roles": [
+        "finance"
+      ],
+      "split": "build",
+      "format": "csv",
+      "pages": null,
+      "account": {
+        "bank": "Gulfstream Commercial Bank (fictional)",
+        "account_name": "Meridian Trading LLC Operating Account",
+        "account_number": "SYNTHETIC-****4417",
+        "currency": "USD",
+        "period_start": "2026-09-01",
+        "period_end": "2026-10-15",
+        "opening_balance": "184250.00"
+      }
+    }
+  ]
+}

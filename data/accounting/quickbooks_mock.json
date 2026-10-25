@@ -1,0 +1,633 @@
+{
+  "_mock": {
+    "notice": "MOCK DATA ONLY. Shaped like QuickBooks Online API responses for a demo. This is not a real QuickBooks integration and no external system is called.",
+    "company": "Meridian Trading LLC",
+    "home_currency": "USD",
+    "as_of": "2026-10-15"
+  },
+  "Vendor": [
+    {
+      "Id": "56",
+      "SyncToken": "0",
+      "DisplayName": "Bluestone Freight Services Ltd",
+      "CompanyName": "Bluestone Freight Services Ltd",
+      "PrimaryEmailAddr": {
+        "Address": "billing@bluestonefreight.example"
+      },
+      "PrimaryPhone": {
+        "FreeFormNumber": "+971 4 555 0177"
+      },
+      "BillAddr": {
+        "Line1": "Warehouse Road 7, Jebel Ali Free Zone",
+        "City": "Dubai, United Arab Emirates"
+      },
+      "TaxIdentifier": "TRN 100 4417 2290 0003",
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TermRef": {
+        "name": "Net 30"
+      },
+      "Active": true,
+      "Balance": 0.0
+    },
+    {
+      "Id": "57",
+      "SyncToken": "0",
+      "DisplayName": "Halcyon Packaging GmbH",
+      "CompanyName": "Halcyon Packaging GmbH",
+      "PrimaryEmailAddr": {
+        "Address": "accounts@halcyon-packaging.example"
+      },
+      "PrimaryPhone": {
+        "FreeFormNumber": "+49 40 5550 1100"
+      },
+      "BillAddr": {
+        "Line1": "Hafenstrasse 88",
+        "City": "20457 Hamburg, Germany"
+      },
+      "TaxIdentifier": "USt-IdNr. DE 000 000 451",
+      "CurrencyRef": {
+        "value": "EUR"
+      },
+      "TermRef": {
+        "name": "Net 45"
+      },
+      "Active": true,
+      "Balance": 12340.5
+    },
+    {
+      "Id": "58",
+      "SyncToken": "0",
+      "DisplayName": "Coastal Office Supplies LLC",
+      "CompanyName": "Coastal Office Supplies LLC",
+      "PrimaryEmailAddr": {
+        "Address": "sales@coastaloffice.example"
+      },
+      "PrimaryPhone": {
+        "FreeFormNumber": "+971 4 555 0190"
+      },
+      "BillAddr": {
+        "Line1": "Shop 3, Al Wasl Road",
+        "City": "Dubai, United Arab Emirates"
+      },
+      "TaxIdentifier": "TRN 100 5521 8830 0003",
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TermRef": {
+        "name": "Net 30"
+      },
+      "Active": true,
+      "Balance": 0.0
+    },
+    {
+      "Id": "59",
+      "SyncToken": "0",
+      "DisplayName": "Cedar Print & Label Co.",
+      "CompanyName": "Cedar Print & Label Co.",
+      "PrimaryEmailAddr": {
+        "Address": "orders@cedarprint.example"
+      },
+      "PrimaryPhone": {
+        "FreeFormNumber": "+971 6 555 0133"
+      },
+      "BillAddr": {
+        "Line1": "Industrial Area 4, Plot 22",
+        "City": "Sharjah, United Arab Emirates"
+      },
+      "TaxIdentifier": "TRN 100 6630 4471 0003",
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TermRef": {
+        "name": "Net 30"
+      },
+      "Active": true,
+      "Balance": 0.0
+    },
+    {
+      "Id": "60",
+      "SyncToken": "0",
+      "DisplayName": "Apex IT Solutions Pte Ltd",
+      "CompanyName": "Apex IT Solutions Pte Ltd",
+      "PrimaryEmailAddr": {
+        "Address": "accounts@apexits.example"
+      },
+      "PrimaryPhone": {
+        "FreeFormNumber": "+65 5550 4417"
+      },
+      "BillAddr": {
+        "Line1": "71 Ayer Rajah Crescent #05-12",
+        "City": "S'pore 139951"
+      },
+      "TaxIdentifier": "GST Reg. M9-0000451-K",
+      "CurrencyRef": {
+        "value": "SGD"
+      },
+      "TermRef": {
+        "name": "Net 14"
+      },
+      "Active": true,
+      "Balance": 11968.2
+    },
+    {
+      "Id": "61",
+      "SyncToken": "0",
+      "DisplayName": "Greenline Facilities Management LLC",
+      "CompanyName": "Greenline Facilities Management LLC",
+      "PrimaryEmailAddr": {
+        "Address": "invoices@greenlinefm.example"
+      },
+      "PrimaryPhone": {
+        "FreeFormNumber": "+971 4 555 0168"
+      },
+      "BillAddr": {
+        "Line1": "Floor 3, Al Khail Gate",
+        "City": "Al Khail Road, Dubai, United Arab Emirates"
+      },
+      "TaxIdentifier": "TRN 100 7781 3306 0003",
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TermRef": {
+        "name": "Net 15"
+      },
+      "Active": true,
+      "Balance": 4410.0
+    }
+  ],
+  "Bill": [
+    {
+      "Id": "201",
+      "SyncToken": "0",
+      "DocNumber": "BFS-2026-0352",
+      "TxnDate": "2026-08-05",
+      "DueDate": "2026-09-04",
+      "VendorRef": {
+        "value": "56",
+        "name": "Bluestone Freight Services Ltd"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 7420.0,
+      "Balance": 0.0,
+      "PrivateNote": "Freight services July 2026",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 7420.0,
+          "Description": "Freight services July 2026",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "81",
+              "name": "Freight and Delivery"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-08-05T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "202",
+      "SyncToken": "0",
+      "DocNumber": "HP-54977",
+      "TxnDate": "2026-08-14",
+      "DueDate": "2026-09-28",
+      "VendorRef": {
+        "value": "57",
+        "name": "Halcyon Packaging GmbH"
+      },
+      "CurrencyRef": {
+        "value": "EUR"
+      },
+      "TotalAmt": 5890.0,
+      "Balance": 0.0,
+      "PrivateNote": "Packaging order PO-2026-0790",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 5890.0,
+          "Description": "Packaging order PO-2026-0790",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "52",
+              "name": "Cost of Goods Sold:Packaging"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-08-14T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "203",
+      "SyncToken": "0",
+      "DocNumber": "APX-2026-074",
+      "TxnDate": "2026-08-20",
+      "DueDate": "2026-09-03",
+      "VendorRef": {
+        "value": "60",
+        "name": "Apex IT Solutions Pte Ltd"
+      },
+      "CurrencyRef": {
+        "value": "SGD"
+      },
+      "TotalAmt": 8250.0,
+      "Balance": 0.0,
+      "PrivateNote": "ERP Milestone 1",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 8250.0,
+          "Description": "ERP Milestone 1",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "67",
+              "name": "IT Services"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-08-20T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "204",
+      "SyncToken": "0",
+      "DocNumber": "GFM/09/2026/064",
+      "TxnDate": "2026-09-01",
+      "DueDate": "2026-09-16",
+      "VendorRef": {
+        "value": "61",
+        "name": "Greenline Facilities Management LLC"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 4410.0,
+      "Balance": 0.0,
+      "PrivateNote": "Facilities maintenance September 2026",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 4410.0,
+          "Description": "Facilities maintenance September 2026",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "71",
+              "name": "Repairs and Maintenance"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-09-01T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "205",
+      "SyncToken": "0",
+      "DocNumber": "BFS-2026-0418",
+      "TxnDate": "2026-09-05",
+      "DueDate": "2026-10-05",
+      "VendorRef": {
+        "value": "56",
+        "name": "Bluestone Freight Services Ltd"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 8242.5,
+      "Balance": 0.0,
+      "PrivateNote": "Freight services August 2026",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 8242.5,
+          "Description": "Freight services August 2026",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "81",
+              "name": "Freight and Delivery"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-09-05T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "206",
+      "SyncToken": "0",
+      "DocNumber": "HP-55102",
+      "TxnDate": "2026-09-12",
+      "DueDate": "2026-10-27",
+      "VendorRef": {
+        "value": "57",
+        "name": "Halcyon Packaging GmbH"
+      },
+      "CurrencyRef": {
+        "value": "EUR"
+      },
+      "TotalAmt": 12340.5,
+      "Balance": 12340.5,
+      "PrivateNote": "Packaging order PO-2026-0855",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 12340.5,
+          "Description": "Packaging order PO-2026-0855",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "52",
+              "name": "Cost of Goods Sold:Packaging"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-09-12T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "207",
+      "SyncToken": "0",
+      "DocNumber": "CPL-3391",
+      "TxnDate": "2026-09-22",
+      "DueDate": "2026-10-22",
+      "VendorRef": {
+        "value": "59",
+        "name": "Cedar Print & Label Co."
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 2430.75,
+      "Balance": 0.0,
+      "PrivateNote": "Labels and sleeves PO-2026-0871",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 2430.75,
+          "Description": "Labels and sleeves PO-2026-0871",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "52",
+              "name": "Cost of Goods Sold:Packaging"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-09-22T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "208",
+      "SyncToken": "0",
+      "DocNumber": "GFM/10/2026/077",
+      "TxnDate": "2026-10-01",
+      "DueDate": "2026-10-16",
+      "VendorRef": {
+        "value": "61",
+        "name": "Greenline Facilities Management LLC"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 4410.0,
+      "Balance": 4410.0,
+      "PrivateNote": "Facilities maintenance October 2026",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 4410.0,
+          "Description": "Facilities maintenance October 2026",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "71",
+              "name": "Repairs and Maintenance"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-10-01T09:00:00+04:00"
+      }
+    },
+    {
+      "Id": "209",
+      "SyncToken": "0",
+      "DocNumber": "APX-2026-091",
+      "TxnDate": "2026-10-04",
+      "DueDate": "2026-10-18",
+      "VendorRef": {
+        "value": "60",
+        "name": "Apex IT Solutions Pte Ltd"
+      },
+      "CurrencyRef": {
+        "value": "SGD"
+      },
+      "TotalAmt": 11968.2,
+      "Balance": 11968.2,
+      "PrivateNote": "ERP Milestone 2",
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 11968.2,
+          "Description": "ERP Milestone 2",
+          "DetailType": "AccountBasedExpenseLineDetail",
+          "AccountBasedExpenseLineDetail": {
+            "AccountRef": {
+              "value": "67",
+              "name": "IT Services"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-10-04T09:00:00+04:00"
+      }
+    }
+  ],
+  "Customer": [
+    {
+      "Id": "11",
+      "DisplayName": "Harborview Hotels Group",
+      "PrimaryEmailAddr": {
+        "Address": "ap@harborview.example"
+      },
+      "Active": true
+    },
+    {
+      "Id": "12",
+      "DisplayName": "Pinecrest Foods LLC",
+      "PrimaryEmailAddr": {
+        "Address": "payables@pinecrest.example"
+      },
+      "Active": true
+    }
+  ],
+  "Invoice": [
+    {
+      "Id": "301",
+      "SyncToken": "0",
+      "DocNumber": "1042",
+      "TxnDate": "2026-08-06",
+      "DueDate": "2026-09-05",
+      "CustomerRef": {
+        "value": "11",
+        "name": "Harborview Hotels Group"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 18600.0,
+      "Balance": 0.0,
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 18600.0,
+          "Description": "Packaging supplies July 2026",
+          "DetailType": "SalesItemLineDetail",
+          "SalesItemLineDetail": {
+            "ItemRef": {
+              "value": "1",
+              "name": "Packaging supplies"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-08-06T10:00:00+04:00"
+      }
+    },
+    {
+      "Id": "302",
+      "SyncToken": "0",
+      "DocNumber": "1047",
+      "TxnDate": "2026-08-23",
+      "DueDate": "2026-09-22",
+      "CustomerRef": {
+        "value": "12",
+        "name": "Pinecrest Foods LLC"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 9240.0,
+      "Balance": 0.0,
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 9240.0,
+          "Description": "Food-grade packaging August 2026",
+          "DetailType": "SalesItemLineDetail",
+          "SalesItemLineDetail": {
+            "ItemRef": {
+              "value": "1",
+              "name": "Packaging supplies"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-08-23T10:00:00+04:00"
+      }
+    },
+    {
+      "Id": "303",
+      "SyncToken": "0",
+      "DocNumber": "1053",
+      "TxnDate": "2026-09-10",
+      "DueDate": "2026-10-10",
+      "CustomerRef": {
+        "value": "12",
+        "name": "Pinecrest Foods LLC"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 6780.0,
+      "Balance": 0.0,
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 6780.0,
+          "Description": "Food-grade packaging September 2026",
+          "DetailType": "SalesItemLineDetail",
+          "SalesItemLineDetail": {
+            "ItemRef": {
+              "value": "1",
+              "name": "Packaging supplies"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-09-10T10:00:00+04:00"
+      }
+    },
+    {
+      "Id": "304",
+      "SyncToken": "0",
+      "DocNumber": "1051",
+      "TxnDate": "2026-09-30",
+      "DueDate": "2026-10-30",
+      "CustomerRef": {
+        "value": "11",
+        "name": "Harborview Hotels Group"
+      },
+      "CurrencyRef": {
+        "value": "USD"
+      },
+      "TotalAmt": 14320.0,
+      "Balance": 14320.0,
+      "Line": [
+        {
+          "Id": "1",
+          "LineNum": 1,
+          "Amount": 14320.0,
+          "Description": "Packaging supplies September 2026",
+          "DetailType": "SalesItemLineDetail",
+          "SalesItemLineDetail": {
+            "ItemRef": {
+              "value": "1",
+              "name": "Packaging supplies"
+            }
+          }
+        }
+      ],
+      "MetaData": {
+        "CreateTime": "2026-09-30T10:00:00+04:00"
+      }
+    }
+  ]
+}

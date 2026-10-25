@@ -1,0 +1,14 @@
+pymupdf==1.28.2
+python-dotenv==1.2.3
+google-genai==2.33.0
+openai==3.12.0
+pydantic==2.13.5
+chromadb==1.5.9
+streamlit==1.66.1
+pandas==3.1.0
+pytest==9.1.1
+numpy==2.5.3
+pillow==12.3.0
+ipykernel==7.4.0
+nbclient==0.11.0
+nbformat==5.11.1

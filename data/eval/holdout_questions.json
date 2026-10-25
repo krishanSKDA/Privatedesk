@@ -1,0 +1,100 @@
+{
+  "questions": [
+    {
+      "id": "h01",
+      "role": "finance",
+      "question": "What is the monthly fee in the Greenline facilities agreement?",
+      "answerable": true,
+      "category": "contract",
+      "expected_answer": "USD 4,200.00 per month, excluding VAT.",
+      "expected_sources": [
+        {
+          "document": "contract_greenline_facilities.pdf",
+          "page": 2,
+          "evidence": [
+            "monthly fee of usd 4,200.00, excluding vat"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h02",
+      "role": "finance",
+      "question": "How much notice is needed to stop the Greenline agreement from renewing?",
+      "answerable": true,
+      "category": "contract",
+      "expected_answer": "Written notice at least 90 days before the end of the current term.",
+      "expected_sources": [
+        {
+          "document": "contract_greenline_facilities.pdf",
+          "page": 1,
+          "evidence": [
+            "at least 90 days before the end of the current term"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h03",
+      "role": "hr",
+      "question": "How many days a week can an eligible employee work remotely?",
+      "answerable": true,
+      "category": "hr_policy",
+      "expected_answer": "Up to 2 days per week.",
+      "expected_sources": [
+        {
+          "document": "hr_remote_work_policy.pdf",
+          "page": 1,
+          "evidence": [
+            "up to 2 remote working days per week"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h04",
+      "role": "hr",
+      "question": "Is there an allowance for home office equipment?",
+      "answerable": true,
+      "category": "hr_policy",
+      "expected_answer": "Yes, a one-off allowance of USD 300, claimed with receipts.",
+      "expected_sources": [
+        {
+          "document": "hr_remote_work_policy.pdf",
+          "page": 1,
+          "evidence": [
+            "one-off home office equipment allowance of usd 300"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h05",
+      "role": "finance",
+      "question": "What is the savings target of the packaging supplier consolidation project?",
+      "answerable": true,
+      "category": "status",
+      "expected_answer": "8% of annual packaging spend of USD 610,000, about USD 48,800 per year.",
+      "expected_sources": [
+        {
+          "document": "status_supplier_consolidation.txt",
+          "page": null,
+          "evidence": [
+            "savings target is 8%",
+            "usd 48,800"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "h06",
+      "role": "hr",
+      "question": "Does the company pay a monthly internet allowance for remote work?",
+      "answerable": false,
+      "category": "absent_near_miss",
+      "expected_answer": "not found",
+      "expected_sources": [],
+      "note": "Only a one-off equipment allowance exists; an internet allowance is not mentioned."
+    }
+  ]
+}
