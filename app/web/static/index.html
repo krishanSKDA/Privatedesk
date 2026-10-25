@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PrivateDesk</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">Private<span>Desk</span></div>
+      <p class="tagline">Answers from your company documents, kept private.</p>
+      <label class="field-label" for="user-select">Signed in as</label>
+      <select id="user-select"></select>
+      <nav id="nav" class="nav" aria-label="Main"></nav>
+      <details class="admin" id="admin">
+        <summary>Privacy and admin</summary>
+        <div id="admin-body" class="admin-body"></div>
+      </details>
+    </aside>
+    <main id="main" class="main" tabindex="-1">
+      <p class="loading">Loading PrivateDesk...</p>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

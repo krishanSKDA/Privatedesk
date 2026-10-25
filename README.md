@@ -80,8 +80,8 @@ Check Google's current Gemini API terms before using real data. At the time of w
 
 | Risk | Control | Where | Tested by |
 |---|---|---|---|
-| Prompt injection from documents | Retrieved text is a delimited data block; tags inside documents are neutralised; model output is shown as plain text; no action runs without a human | `prompt.py`, `main.py`, `gate.py` | `test_injected_document_text_stays_inside_the_data_block`, `test_model_output_cannot_render_markdown_images`, security cases s01 and s02 |
-| Role leak | Role filter inside the Chroma query; the retriever refuses results for the wrong role; reranking happens after filtering | `retriever.py` | `test_finance_user_never_receives_an_hr_chunk`, cross-role sweep (0 leaks) |
+| Prompt injection from documents | Retrieved text is a delimited data block; tags inside documents are neutralised; the page inserts model output as plain text only, under a strict Content-Security-Policy; no action runs without a human | `prompt.py`, `web/server.py`, `web/static/app.js`, `gate.py` | `test_injected_document_text_stays_inside_the_data_block`, `test_frontend_never_inserts_html`, `test_page_is_served_with_a_strict_content_security_policy`, security cases s01 and s02 |
+| Role leak | Role filter inside the Chroma query; the retriever refuses results for the wrong role; reranking happens after filtering; the server sets the role from the signed-in user and ignores any role sent by the browser | `retriever.py`, `web/server.py` | `test_finance_user_never_receives_an_hr_chunk`, `test_role_comes_from_the_server_not_the_request`, cross-role sweep (0 leaks) |
 | Leaked secrets | Keys only in `.env` (gitignored); API errors reduced to type and status code; keys redacted from the log | `config.py`, `helpers.py`, `logger.py` | `test_*_errors_do_not_expose_api_details`, `test_secrets_are_redacted_from_the_log` |
 | Sensitive data in logs | Log stores user, role, question, document names and outcomes, never chunk text, answers or email bodies | `logger.py` | `test_questions_are_logged_with_document_names_not_text` |
 | Malicious files | Allow-list of PDF, text, CSV and image types; size and page limits; file content must match its extension; nothing is executed | `loader.py` | `test_unsupported_file_type_is_rejected` and four related tests |
@@ -102,13 +102,15 @@ pip install -r requirements.txt
 copy .env.example .env           # Windows (macOS / Linux: cp .env.example .env)
                                  # then put your key in GEMINI_API_KEY
 python run_ingestion.py          # index the build documents
-streamlit run app/main.py        # open http://localhost:8501
+python -m app.web.server         # open http://127.0.0.1:8000
 ```
+
+The web app (`app/web/`) is a FastAPI server with a plain HTML, CSS and JavaScript page: no build step, no external fonts or scripts. An older Streamlit version of the same features is still available with `streamlit run app/main.py`.
 
 Other commands:
 
 ```bash
-pytest                                                # 124 offline tests, no API calls
+pytest                                                # 140 offline tests, no API calls
 python scripts/generate_data.py                       # regenerate the synthetic data
 python -m app.evaluation.evaluator --report           # build-set report
 python run_ingestion.py --include-holdout             # then the held-out report:
@@ -117,7 +119,7 @@ python -m app.generation.rag_chain "What are the Bluestone payment terms?" --rol
 python -m app.extraction.extractor
 ```
 
-In the app, pick a role in the sidebar. Finance sees contracts, the price list, invoices and the bank statement. HR sees the leave policy. Both see the expense policy, status notes and meeting notes. The demo user name is typed in the sidebar; there is no login.
+In the app, choose who you are signed in as: Daniel Reyes (Finance) or Priya Nair (HR). Finance sees contracts, the price list, invoices and the bank statement, plus the Invoices and Approvals pages. HR sees the leave policy and only the chat. Both see the expense policy, status notes and meeting notes. There is no login; the demo user is picked from a list.
 
 ## Evaluation results
 
@@ -175,7 +177,9 @@ Switching provider or embedding model needs `python run_ingestion.py` again; the
 
 ```
 app/
-  main.py                    Streamlit UI: Ask, Invoices, Review tabs
+  web/server.py              FastAPI server for the web app
+  web/static/                index.html, styles.css, app.js (no build step)
+  main.py                    older Streamlit version of the UI
   config.py                  settings from .env
   ingestion/                 loader.py, chunking.py, embedder.py
   retrieval/                 vector_store.py, retriever.py, reranker.py
@@ -203,7 +207,7 @@ run_ingestion.py             load, chunk, embed and index
 - **Three-day prototype**, tested on one Windows laptop with synthetic data. Not tested on macOS or a Mac Studio.
 - **Cloud AI provider.** Document text, questions and invoices are sent to Gemini. Moving embeddings and answers to local models is designed for but not implemented or tested.
 - **Mock accounting.** The QuickBooks connection is a local read-only JSON mock. Approved actions are simulated in a local outbox; nothing is sent or posted.
-- **No authentication.** The user name and role are picked in the sidebar for the demo. A real deployment needs a login that sets the role.
+- **No authentication.** The demo user is picked from a list and sent as a request header. The server maps it to a role, but anyone who can reach the server can claim either user. A real deployment needs a login that sets the role. The server listens on `127.0.0.1` only by default.
 - **Small evaluation set.** 15 build questions, 6 held-out questions and 6 invoices. The held-out set was written in the same style as the build set, so it shows generalisation to new files, not to messy real-world documents. No held-out invoice was messy.
 - **Scanned documents.** Scans are read by the vision model only on the invoice path; scanned non-invoice documents are not indexed. For scans, the check that quoted text appears in the document cannot run, so accuracy on scans is expected to be lower.
 - **Model variability.** Model output varies between runs. The invoice results above held across 3 runs, which shows the earlier variance is gone, not that it cannot return.
